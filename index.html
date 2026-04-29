@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gravity Reverser</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-info">
+            <div class="level">Level: <span id="level">1</span></div>
+            <div class="gravity-indicator">
+                <span id="gravity-text">Gravity: Down</span>
+                <div class="gravity-icon" id="gravity-icon"></div>
+            </div>
+        </div>
+        <div class="game-world" id="game-world">
+            <div class="character" id="character"></div>
+            <div class="finish-line" id="finish-line">
+                <div class="finish-text">FINISH</div>
+            </div>
+        </div>
+        <div class="game-overlay" id="game-overlay">
+            <div class="overlay-content">
+                <h2 id="overlay-title">Gravity Reverser</h2>
+                <p id="overlay-message">Click to start</p>
+                <button id="restart-btn">Restart</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
