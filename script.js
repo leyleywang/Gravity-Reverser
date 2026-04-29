@@ -1,65 +1,125 @@
 class Game {
     constructor() {
-        this.gameWorld = document.getElementById('game-world');
-        this.character = document.getElementById('character');
-        this.levelElement = document.getElementById('level');
-        this.gravityText = document.getElementById('gravity-text');
-        this.gravityIcon = document.getElementById('gravity-icon');
-        this.gameOverlay = document.getElementById('game-overlay');
-        this.overlayTitle = document.getElementById('overlay-title');
-        this.overlayMessage = document.getElementById('overlay-message');
-        this.restartBtn = document.getElementById('restart-btn');
+        console.log('Game constructor called');
         
-        this.level = 1;
-        this.gravity = 'down';
-        this.isPlaying = false;
-        this.obstacles = [];
-        this.platforms = [];
-        
-        // 角色移动相关属性
-        this.characterSpeed = 2.5; // 稍微降低水平速度，让玩家有更多反应时间
-        this.characterVerticalSpeed = 0;
-        this.gravityForce = 0.25; // 稍微降低重力，让角色移动更加流畅
-        this.maxVerticalSpeed = 6; // 降低最大垂直速度，让玩家更容易控制
-        
-        // 障碍物和平台速度
-        this.obstacleSpeed = 1.8; // 稍微降低初始障碍物速度
-        this.platformSpeed = 1.2; // 稍微降低初始平台速度
-        
-        // 地面和天花板位置
-        this.groundY = 50;
-        this.ceilingY = 50;
-        
-        this.gameLoopId = null;
-        
-        this.init();
+        try {
+            // 获取DOM元素
+            this.gameWorld = document.getElementById('game-world');
+            this.character = document.getElementById('character');
+            this.levelElement = document.getElementById('level');
+            this.gravityText = document.getElementById('gravity-text');
+            this.gravityIcon = document.getElementById('gravity-icon');
+            this.gameOverlay = document.getElementById('game-overlay');
+            this.overlayTitle = document.getElementById('overlay-title');
+            this.overlayMessage = document.getElementById('overlay-message');
+            this.restartBtn = document.getElementById('restart-btn');
+            
+            // 检查是否成功获取所有DOM元素
+            const requiredElements = [
+                { name: 'gameWorld', element: this.gameWorld },
+                { name: 'character', element: this.character },
+                { name: 'levelElement', element: this.levelElement },
+                { name: 'gravityText', element: this.gravityText },
+                { name: 'gravityIcon', element: this.gravityIcon },
+                { name: 'gameOverlay', element: this.gameOverlay },
+                { name: 'overlayTitle', element: this.overlayTitle },
+                { name: 'overlayMessage', element: this.overlayMessage },
+                { name: 'restartBtn', element: this.restartBtn }
+            ];
+            
+            let missingElements = [];
+            requiredElements.forEach(item => {
+                if (!item.element) {
+                    missingElements.push(item.name);
+                    console.error(`Missing DOM element: ${item.name}`);
+                }
+            });
+            
+            if (missingElements.length > 0) {
+                throw new Error(`Missing required DOM elements: ${missingElements.join(', ')}`);
+            }
+            
+            console.log('All DOM elements found successfully');
+            
+            // 游戏状态
+            this.level = 1;
+            this.gravity = 'down';
+            this.isPlaying = false;
+            this.obstacles = [];
+            this.platforms = [];
+            
+            // 角色移动相关属性
+            this.characterSpeed = 2.5;
+            this.characterVerticalSpeed = 0;
+            this.gravityForce = 0.25;
+            this.maxVerticalSpeed = 6;
+            
+            // 障碍物和平台速度
+            this.obstacleSpeed = 1.8;
+            this.platformSpeed = 1.2;
+            
+            // 地面和天花板位置
+            this.groundY = 50;
+            this.ceilingY = 50;
+            
+            this.gameLoopId = null;
+            
+            this.init();
+        } catch (error) {
+            console.error('Error in Game constructor:', error);
+            alert('游戏初始化失败，请刷新页面重试。错误: ' + error.message);
+        }
     }
     
     init() {
-        this.gameWorld.addEventListener('click', () => {
-            if (!this.isPlaying) {
-                this.startGame();
-            } else {
-                this.toggleGravity();
-            }
-        });
+        console.log('init called');
         
-        this.restartBtn.addEventListener('click', () => {
-            this.restartGame();
-        });
+        try {
+            // 添加游戏世界点击事件
+            this.gameWorld.addEventListener('click', () => {
+                console.log('gameWorld clicked, isPlaying:', this.isPlaying);
+                if (!this.isPlaying) {
+                    this.startGame();
+                } else {
+                    this.toggleGravity();
+                }
+            });
+            
+            // 添加重新开始按钮点击事件
+            this.restartBtn.addEventListener('click', (e) => {
+                console.log('restartBtn clicked');
+                e.stopPropagation(); // 防止事件冒泡到gameWorld
+                this.restartGame();
+            });
+            
+            console.log('init completed successfully');
+        } catch (error) {
+            console.error('Error in init:', error);
+        }
     }
     
     startGame() {
-        this.isPlaying = true;
-        this.gameOverlay.style.display = 'none';
-        this.resetLevel();
-        this.gameLoop();
+        console.log('startGame called');
+        
+        try {
+            this.isPlaying = true;
+            this.gameOverlay.style.display = 'none';
+            this.resetLevel();
+            this.gameLoop();
+            console.log('startGame completed successfully');
+        } catch (error) {
+            console.error('Error in startGame:', error);
+            this.isPlaying = false;
+        }
     }
     
     restartGame() {
+        console.log('restartGame called');
+        
         this.level = 1;
-        this.obstacleSpeed = 2;
-        this.platformSpeed = 1.5;
+        // 与 constructor 中保持一致的初始速度
+        this.obstacleSpeed = 1.8;
+        this.platformSpeed = 1.2;
         this.isPlaying = false;
         this.clearObstacles();
         this.clearPlatforms();
@@ -71,6 +131,8 @@ class Game {
         if (this.gameLoopId) {
             cancelAnimationFrame(this.gameLoopId);
         }
+        
+        console.log('restartGame completed');
     }
     
     resetLevel() {
@@ -82,12 +144,21 @@ class Game {
     }
     
     resetCharacter() {
-        const worldHeight = this.gameWorld.clientHeight;
-        const characterHeight = this.character.clientHeight;
+        console.log('resetCharacter called');
+        
+        // 安全获取游戏世界高度
+        const worldHeight = this.gameWorld.clientHeight || window.innerHeight - 100;
+        // 安全获取角色高度
+        const characterHeight = this.character.clientHeight || 40;
+        
+        console.log('worldHeight:', worldHeight);
+        console.log('characterHeight:', characterHeight);
         
         this.character.style.left = '50px';
         // 使用top定位，初始位置在地面
         const initialTop = worldHeight - this.groundY - characterHeight;
+        console.log('initialTop:', initialTop);
+        
         this.character.style.top = `${initialTop}px`;
         this.character.style.bottom = 'auto';
         this.character.classList.remove('reversed');
@@ -96,6 +167,8 @@ class Game {
         this.gravity = 'down';
         this.characterVerticalSpeed = 0;
         this.updateGravityDisplay();
+        
+        console.log('resetCharacter completed');
     }
     
     toggleGravity() {
@@ -123,75 +196,109 @@ class Game {
     }
     
     generateObstacles() {
-        const obstacleCount = Math.min(3 + this.level, 8);
-        const worldHeight = this.gameWorld.clientHeight;
+        console.log('generateObstacles called, level:', this.level);
         
-        for (let i = 0; i < obstacleCount; i++) {
-            const obstacle = document.createElement('div');
-            obstacle.classList.add('obstacle');
+        try {
+            const obstacleCount = Math.min(3 + this.level, 8);
+            const worldHeight = this.gameWorld.clientHeight || window.innerHeight - 100;
             
-            const width = Math.random() * 30 + 20;
-            const height = Math.random() * 30 + 20;
+            console.log('obstacleCount:', obstacleCount);
+            console.log('worldHeight:', worldHeight);
             
-            obstacle.style.width = `${width}px`;
-            obstacle.style.height = `${height}px`;
-            
-            // 让障碍物分布在整个游戏区域，不仅仅是顶部和底部
-            // 确保障碍物在中间区域，让角色需要在上下平面之间穿梭来避开它们
-            const minY = this.groundY + 50;
-            const maxY = worldHeight - this.ceilingY - height - 50;
-            const obstacleY = Math.random() * (maxY - minY) + minY;
-            
-            // 随机决定障碍物是靠近地面还是靠近天花板
-            const isNearGround = Math.random() > 0.5;
-            if (isNearGround) {
-                // 靠近地面
-                const groundObstacleY = Math.random() * 100 + this.groundY;
-                obstacle.style.bottom = `${groundObstacleY}px`;
-                obstacle.style.top = 'auto';
-            } else {
-                // 靠近天花板
-                const ceilingObstacleY = Math.random() * 100 + this.ceilingY;
-                obstacle.style.top = `${ceilingObstacleY}px`;
-                obstacle.style.bottom = 'auto';
+            for (let i = 0; i < obstacleCount; i++) {
+                const obstacle = document.createElement('div');
+                obstacle.classList.add('obstacle');
+                
+                const width = Math.random() * 30 + 20;
+                const height = Math.random() * 30 + 20;
+                
+                obstacle.style.width = `${width}px`;
+                obstacle.style.height = `${height}px`;
+                
+                // 随机决定障碍物是靠近地面、靠近天花板还是在中间区域
+                const random = Math.random();
+                if (random < 0.35) {
+                    // 靠近地面
+                    const groundObstacleY = Math.random() * 100 + this.groundY;
+                    obstacle.style.bottom = `${groundObstacleY}px`;
+                    obstacle.style.top = 'auto';
+                } else if (random < 0.7) {
+                    // 靠近天花板
+                    const ceilingObstacleY = Math.random() * 100 + this.ceilingY;
+                    obstacle.style.top = `${ceilingObstacleY}px`;
+                    obstacle.style.bottom = 'auto';
+                } else {
+                    // 中间区域的障碍物
+                    const minMiddleY = this.groundY + 100;
+                    const maxMiddleY = worldHeight - this.ceilingY - height - 100;
+                    
+                    if (maxMiddleY > minMiddleY) {
+                        const middleY = Math.random() * (maxMiddleY - minMiddleY) + minMiddleY;
+                        obstacle.style.top = `${middleY}px`;
+                        obstacle.style.bottom = 'auto';
+                    } else {
+                        // 如果空间不够，就放在地面附近
+                        const groundObstacleY = Math.random() * 100 + this.groundY;
+                        obstacle.style.bottom = `${groundObstacleY}px`;
+                        obstacle.style.top = 'auto';
+                    }
+                }
+                
+                obstacle.style.left = `${window.innerWidth + i * 200}px`;
+                this.gameWorld.appendChild(obstacle);
+                this.obstacles.push(obstacle);
             }
             
-            // 也有一些障碍物在中间区域
-            if (Math.random() > 0.5) {
-                // 中间区域的障碍物
-                const middleY = Math.random() * (worldHeight - 200) + 100;
-                obstacle.style.top = `${middleY}px`;
-                obstacle.style.bottom = 'auto';
-            }
-            
-            obstacle.style.left = `${window.innerWidth + i * 200}px`;
-            this.gameWorld.appendChild(obstacle);
-            this.obstacles.push(obstacle);
+            console.log('generateObstacles completed, obstacles created:', this.obstacles.length);
+        } catch (error) {
+            console.error('Error in generateObstacles:', error);
         }
     }
     
     generatePlatforms() {
-        if (this.level >= 3) {
-            const platformCount = Math.min(1 + Math.floor(this.level / 2), 3);
-            
-            for (let i = 0; i < platformCount; i++) {
-                const platform = document.createElement('div');
-                platform.classList.add('platform');
+        console.log('generatePlatforms called, level:', this.level);
+        
+        try {
+            if (this.level >= 3) {
+                const platformCount = Math.min(1 + Math.floor(this.level / 2), 3);
+                const worldHeight = this.gameWorld.clientHeight || window.innerHeight - 100;
                 
-                platform.style.width = '100px';
-                platform.style.height = '15px';
+                console.log('platformCount:', platformCount);
+                console.log('worldHeight:', worldHeight);
                 
-                const isTop = Math.random() > 0.5;
-                if (isTop) {
-                    platform.style.top = '150px';
-                } else {
-                    platform.style.bottom = '150px';
+                for (let i = 0; i < platformCount; i++) {
+                    const platform = document.createElement('div');
+                    platform.classList.add('platform');
+                    
+                    platform.style.width = '100px';
+                    platform.style.height = '15px';
+                    
+                    // 随机决定平台是在上方还是下方区域
+                    const isTopArea = Math.random() > 0.5;
+                    
+                    if (isTopArea) {
+                        // 上方区域（靠近天花板）
+                        const topY = Math.random() * 100 + this.ceilingY + 50;
+                        platform.style.top = `${topY}px`;
+                        platform.style.bottom = 'auto';
+                    } else {
+                        // 下方区域（靠近地面）
+                        const bottomY = Math.random() * 100 + this.groundY + 50;
+                        platform.style.bottom = `${bottomY}px`;
+                        platform.style.top = 'auto';
+                    }
+                    
+                    platform.style.left = `${window.innerWidth + i * 300}px`;
+                    this.gameWorld.appendChild(platform);
+                    this.platforms.push(platform);
                 }
                 
-                platform.style.left = `${window.innerWidth + i * 300}px`;
-                this.gameWorld.appendChild(platform);
-                this.platforms.push(platform);
+                console.log('generatePlatforms completed, platforms created:', this.platforms.length);
+            } else {
+                console.log('Level < 3, no platforms generated');
             }
+        } catch (error) {
+            console.error('Error in generatePlatforms:', error);
         }
     }
     
@@ -403,18 +510,41 @@ class Game {
     }
     
     gameLoop() {
-        if (!this.isPlaying) return;
+        if (!this.isPlaying) {
+            console.log('gameLoop stopped, isPlaying is false');
+            return;
+        }
         
-        this.updateCharacter();
-        this.updateObstacles();
-        this.updatePlatforms();
-        this.checkCollisions();
-        
-        this.gameLoopId = requestAnimationFrame(() => this.gameLoop());
+        try {
+            this.updateCharacter();
+            this.updateObstacles();
+            this.updatePlatforms();
+            this.checkCollisions();
+            
+            this.gameLoopId = requestAnimationFrame(() => this.gameLoop());
+        } catch (error) {
+            console.error('Error in gameLoop:', error);
+            this.isPlaying = false;
+            alert('游戏运行出错，请刷新页面重试。错误: ' + error.message);
+        }
     }
 }
 
 // Initialize the game when the DOM is loaded
+console.log('DOMContentLoaded listener added');
+
 document.addEventListener('DOMContentLoaded', () => {
-    new Game();
+    console.log('DOMContentLoaded event fired');
+    
+    try {
+        // 等待一小段时间确保DOM完全渲染
+        setTimeout(() => {
+            console.log('Creating Game instance...');
+            const game = new Game();
+            console.log('Game instance created successfully');
+        }, 100);
+    } catch (error) {
+        console.error('Error initializing game:', error);
+        alert('游戏初始化失败，请刷新页面重试。错误: ' + error.message);
+    }
 });

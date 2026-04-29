@@ -72,33 +72,13 @@ body {
     border-radius: 8px;
     position: absolute;
     left: 50px;
-    bottom: 50px;
-    transition: all 0.3s ease;
+    /* JavaScript会动态设置top或bottom，所以这里不设置默认值 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 0 15px rgba(0, 255, 204, 0.7);
-    animation: move 0.5s infinite alternate;
-}
-
-@keyframes move {
-    0% {
-        transform: translateY(0);
-    }
-    100% {
-        transform: translateY(-5px);
-    }
 }
 
 .character.reversed {
     transform: rotate(180deg);
-    animation: move-reversed 0.5s infinite alternate;
-}
-
-@keyframes move-reversed {
-    0% {
-        transform: rotate(180deg) translateY(0);
-    }
-    100% {
-        transform: rotate(180deg) translateY(-5px);
-    }
 }
 
 .character.collision {
