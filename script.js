@@ -353,16 +353,25 @@ class Game {
         
         // 获取当前角色位置 - 统一使用top定位来计算
         let currentTop;
-        if (this.character.style.top !== 'auto' && this.character.style.top) {
-            currentTop = parseInt(this.character.style.top);
-        } else if (this.character.style.bottom !== 'auto' && this.character.style.bottom) {
-            // 如果使用的是bottom定位，转换为top
-            const currentBottom = parseInt(this.character.style.bottom);
-            currentTop = worldHeight - currentBottom - characterHeight;
+        
+        // 首先尝试从 style.top 获取
+        const topStyle = this.character.style.top;
+        if (topStyle && topStyle !== 'auto' && topStyle.endsWith('px')) {
+            currentTop = parseInt(topStyle);
         } else {
-            // 默认位置
-            currentTop = worldHeight - this.groundY - characterHeight;
+            // 如果无法从 style 获取，使用 getBoundingClientRect 计算
+            const characterRect = this.character.getBoundingClientRect();
+            const worldRect = this.gameWorld.getBoundingClientRect();
+            currentTop = characterRect.top - worldRect.top;
+            
+            // 确保障碍物在合理范围内
+            if (isNaN(currentTop) || currentTop < 0) {
+                currentTop = worldHeight - this.groundY - characterHeight;
+            }
         }
+        
+        console.log('updateCharacter - currentTop:', currentTop);
+        console.log('updateCharacter - characterVerticalSpeed:', this.characterVerticalSpeed);
         
         // 计算新的top位置
         // 当characterVerticalSpeed为正时，角色向下移动（top增加）
